@@ -1,4 +1,4 @@
-# E-Commerce Book — Python GUI Edition
+# E-Commerce Book  Python GUI Edition
 
 This version is based on the uploaded original `ecommerce.db` and the C project's SQLite schema.
 
