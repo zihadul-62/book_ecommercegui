@@ -101,7 +101,7 @@ class App(tk.Tk):
 
         self.home_canvas.create_text(
             550, 75,
-            text="Welcome to E-Commerce Book",
+            text="Welcome To E-Commerce Books",
             fill="#172554",
             font=("Segoe UI", 22, "bold"),
             tags="content"

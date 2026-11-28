@@ -359,34 +359,45 @@ class App(tk.Tk):
                   cursor="hand2", padx=15, pady=9).pack(
                       side="left", fill="x", expand=True, padx=(6, 0))
 
-    def add_book_to_cart(self, book_id):
-        with db() as con:
-            book = con.execute(
-                "SELECT id, title, price, quantity FROM books WHERE id=?", (book_id,)
-            ).fetchone()
-            if not book:
-                messagebox.showerror("Not Found", "This book no longer exists.")
-                return
-            if book["quantity"] < 1:
-                messagebox.showwarning("Out of Stock", "This book is out of stock.")
-                return
-            con.execute(
-                "INSERT INTO cart(username,book_id,book_name,price) VALUES(?,?,?,?)",
-                (self.user, book["id"], book["title"], book["price"])
-            )
-        messagebox.showinfo("Cart", f'"{book["title"]}" added to your cart.')
+    
+def add_cart(self, t=None, book_id=None):
+    if book_id is None:
+        if t is None:
+            messagebox.showwarning("Select book", "Select a book first.")
+            return
 
-    def add_cart(self,t):
-        s=t.selection()
-        if not s: messagebox.showwarning("Select book","Select a book first."); return
-        v=t.item(s[0],"values"); book_id=int(v[0])
-        with db() as c:
-            b=c.execute("SELECT * FROM books WHERE id=?",(book_id,)).fetchone()
-            if not b: messagebox.showerror("Not found","Book not found."); return
-            if b["quantity"]<1: messagebox.showwarning("Out of stock","This book is out of stock."); return
-            c.execute("INSERT INTO cart(username,book_id,book_name,price) VALUES(?,?,?,?)",
-                      (self.user,b["id"],b["title"],b["price"]))
-        messagebox.showinfo("Cart","Book added to your cart.")
+        s = t.selection()
+        if not s:
+            messagebox.showwarning("Select book", "Select a book first.")
+            return
+
+        v = t.item(s[0], "values")
+        book_id = int(v[0])
+
+    with db() as con:
+        book = con.execute(
+            "SELECT id, title, price, quantity FROM books WHERE id=?",
+            (book_id,)
+        ).fetchone()
+
+        if not book:
+            messagebox.showerror("Not Found", "This book no longer exists.")
+            return
+
+        if book["quantity"] < 1:
+            messagebox.showwarning("Out of Stock", "This book is out of stock.")
+            return
+
+        con.execute(
+            "INSERT INTO cart(username,book_id,book_name,price) VALUES(?,?,?,?)",
+            (self.user, book["id"], book["title"], book["price"])
+        )
+
+    messagebox.showinfo(
+        "Cart",
+        f'"{book["title"]}" added to your cart.'
+    )
+
 
     def view_cart(self):
         self.toolbar("Shopping Cart",f"Cart for {self.user}")
